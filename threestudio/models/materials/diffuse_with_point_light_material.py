@@ -22,6 +22,7 @@ class DiffuseWithPointLightMaterial(BaseMaterial):
         textureless_prob: float = 0.5
         albedo_activation: str = "sigmoid"
         soft_shading: bool = False
+        lambda_normal_small: bool = True
 
     cfg: Config
     requires_normal: bool = True
