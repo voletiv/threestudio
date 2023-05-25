@@ -131,11 +131,11 @@ class ImageConditionDreamFusion(BaseLift3DSystem):
             loss += loss_orient * self.C(self.cfg.loss.lambda_orient)
 
         if self.C(self.cfg.loss.lambda_normal_smooth) > 0:
-            if "normal" not in out:
+            if "comp_normal" not in out:
                 raise ValueError(
-                    "Normal is required for normal smooth loss, no normal is found in the output."
+                    "2D Normal is required for normal smooth loss, no comp_normal is found in the output."
                 )
-            normal = out["normal"]
+            normal = out["comp_normal"]
             loss_normal_smooth = (
                 normal[:, 1:, :, :] - normal[:, :-1, :, :]
             ).square().mean() + (
