@@ -176,7 +176,8 @@ class NeRFVolumeRenderer(VolumeRenderer):
                     **geo_out,
                 }
             )
-        else:
+
+        if not self.training or self.cfg.lambda_normal_smooth > 0:
             if "normal" in geo_out:
                 comp_normal: Float[Tensor, "Nr 3"] = nerfacc.accumulate_along_rays(
                     weights[..., 0],
