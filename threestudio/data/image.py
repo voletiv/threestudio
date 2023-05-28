@@ -71,7 +71,7 @@ class SingleImageDataBase:
             ).astype(np.float32)
             / 255.0
         )
-        rgb = rgba[..., :3] * rgba[..., 3:] + (1 - rgba[..., 3:])
+        rgb = rgba[..., :3] * rgba[..., 3:] # + (1 - rgba[..., 3:]) # claforte: weird. not sure why the last term is being added.
         self.rgb: Float[Tensor, "1 H W 3"] = (
             torch.from_numpy(rgb).unsqueeze(0).contiguous().to(self.rank)
         )
@@ -151,7 +151,7 @@ class SingleImageDataBase:
         self.camera_distance = camera_distance
 
     def get_all_images(self):
-        return self.rgb
+         return self.rgb
 
 
 class SingleImageIterableDataset(IterableDataset, SingleImageDataBase):

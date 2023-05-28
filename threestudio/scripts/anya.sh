@@ -1,0 +1,1 @@
+python launch.py --config configs/zero123.yaml --train --gpu 3 tag="max_step_percent=0.65-max_step=2000" system.renderer.num_samples_per_ray=384 data.random_camera.batch_size=6 system.material.textureless_prob=0.05 system.optimizer.args.lr=0.05 system.guidance.max_step_percent=0.65 system.loss.lambda_sparsity=2.0 system.material.ambient_only_steps=1 trainer.max_steps=2000
