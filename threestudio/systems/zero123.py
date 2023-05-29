@@ -205,11 +205,7 @@ class Zero123(BaseLift3DSystem):
         log_loss2("", loss, loss_weight)
 
         return {"loss": loss}
-        # self.manual_backward(loss)
-        # opt.step()
-        # sch = self.lr_schedulers()
-        # sch.step()
-
+        
     def training_step(self, batch, batch_idx):
         out_no_ref = self.training_substep(batch, batch_idx, do_ref=False, loss_weight=1.0)
         # do_ref = (
@@ -219,6 +215,11 @@ class Zero123(BaseLift3DSystem):
         out_ref = self.training_substep(batch, batch_idx, do_ref=True, loss_weight=1.0)
         total_loss = out_no_ref["loss"] + out_ref["loss"]
         self.log("train/loss", total_loss, prog_bar=True)
+        
+        #sch = self.lr_schedulers()
+        #sch.step()
+
+        
         return {"loss": total_loss}
 
     def validation_step(self, batch, batch_idx):
