@@ -12,6 +12,7 @@ tensorboard
 matplotlib
 imageio
 imageio[ffmpeg]
+ipywidgets
 trimesh
 git+https://github.com/NVlabs/nvdiffrast.git
 # deepfloyd

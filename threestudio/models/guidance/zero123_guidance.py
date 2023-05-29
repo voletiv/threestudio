@@ -37,7 +37,7 @@ def instantiate_from_config(config):
 
 
 # load model
-def load_model_from_config(config, ckpt, device, vram_O=True, verbose=False):
+def load_model_from_config(config, ckpt, device, vram_O=False, verbose=False):
     pl_sd = torch.load(ckpt, map_location="cpu")
 
     if "global_step" in pl_sd and verbose:
@@ -262,6 +262,8 @@ class Zero123Guidance(BaseObject):
             latents = self.encode_images(rgb_BCHW_512)
 
         # timestep ~ U(0.02, 0.98) to avoid very high/low noise level
+        # claforte: try a non-uniform sampling, to favor middle-range noise instead of extremes
+        # also try to decrease/divide loss for samples with very high noise?
         t = torch.randint(
             self.min_step,
             self.max_step + 1,
