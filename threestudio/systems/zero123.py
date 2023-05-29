@@ -7,6 +7,7 @@ import torch
 import torch.nn.functional as F
 
 import threestudio
+import wandb
 from threestudio.systems.base import BaseLift3DSystem
 from threestudio.utils.ops import binary_cross_entropy, dot
 from threestudio.utils.typing import *
@@ -131,8 +132,11 @@ class Zero123(BaseLift3DSystem):
 
         if self.true_global_step % 10 == 0:
             with torch.no_grad():
+                iter_debug_img_filename = (
+                    f"it{self.true_global_step}-{substep_name}-debug.png"
+                )
                 self.save_image_grid(
-                    f"it{self.true_global_step}-{substep_name}-debug.png",
+                    iter_debug_img_filename,
                     (
                         [
                             {
@@ -171,6 +175,9 @@ class Zero123(BaseLift3DSystem):
                         },
                     ],
                 )
+                if self.trainer.wandb_logger:
+                    filepath = self.get_save_path(iter_debug_img_filename)
+                    wandb.log({f"iter-{substep_name}": wandb.Image(filepath)})
 
         if self.C(self.cfg.loss.lambda_orient) > 0:
             if "normal" not in out:
@@ -252,8 +259,9 @@ class Zero123(BaseLift3DSystem):
 
     def validation_step(self, batch, batch_idx):
         out = self(batch)
+        val_image_filename = f"it{self.true_global_step}-val/{batch['index'][0]}.png"
         self.save_image_grid(
-            f"it{self.true_global_step}-val/{batch['index'][0]}.png",
+            val_image_filename,
             (
                 [
                     {
@@ -292,6 +300,9 @@ class Zero123(BaseLift3DSystem):
                 },
             ],
         )
+        if self.trainer.wandb_logger:
+            filepath = self.get_save_path(val_image_filename)
+            wandb.log({"validation_image": wandb.Image(filepath)})
 
     def on_validation_epoch_end(self):
         self.save_img_sequence(
@@ -301,6 +312,11 @@ class Zero123(BaseLift3DSystem):
             save_format="mp4",
             fps=30,
         )
+        if self.trainer.wandb_logger:
+            filename = f"it{self.true_global_step}-val"
+            filepath = self.get_save_path(f"{filename}.mp4")
+            wandb.log({"validation_video": wandb.Video(filepath)})
+
         shutil.rmtree(
             os.path.join(self.get_save_dir(), f"it{self.true_global_step}-val")
         )

@@ -128,19 +128,32 @@ def main() -> None:
         ]
 
     loggers = []
+    # claforte TODO: check environment variable, e.g. pointing to yaml config
+    use_wandb_logger = True
     if args.train:
         # make tensorboard logging dir to suppress warning
         rank_zero_only(
             lambda: os.makedirs(os.path.join(cfg.trial_dir, "tb_logs"), exist_ok=True)
         )()
+
         loggers += [
             TensorBoardLogger(cfg.trial_dir, name="tb_logs"),
             CSVLogger(cfg.trial_dir, name="csv_logs"),
         ]
 
+        if use_wandb_logger:
+            from pytorch_lightning.loggers import WandbLogger
+
+            import wandb
+
+            wandb_logger = WandbLogger(project="threestudio", config=cfg)
+            loggers += [wandb_logger]
+
     trainer = Trainer(
         callbacks=callbacks, logger=loggers, inference_mode=False, **cfg.trainer
     )
+
+    trainer.wandb_logger = wandb_logger if use_wandb_logger else None
 
     def set_system_status(system: BaseSystem, ckpt_path: Optional[str]):
         if ckpt_path is None:

@@ -32,3 +32,6 @@ einops
 kornia
 taming-transformers-rom1504
 git+https://github.com/openai/CLIP.git
+
+# for optional wandb logging
+wandb

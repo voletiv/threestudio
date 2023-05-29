@@ -180,3 +180,4 @@ pyrightconfig.json
 outputs/
 
 *.ckpt
+wandb/
