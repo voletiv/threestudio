@@ -4,6 +4,7 @@ python launch.py --config configs/zero123.yaml --train --gpu 0 tag="anya_ph1"
 
 # renamed as outputs/anya_ph1_latest
 
+# claforte: doesn't work yet!
 python launch.py --config configs/dreamfusion-if.yaml --train --gpu 0 \
   system.prompt_processor.prompt="A DSLR 3D photo of a cute anime schoolgirl stands proudly with her arms in the air, pink hair ( unreal engine 5 trending on Artstation Ghibli 4k )" \
-  system.background.random_aug=true resume=outputs/zero123/anya_ph1_latest/ckpts/epoch=0-step=1000.ckpt
+  system.background.random_aug=true resume=outputs/zero123/anya_ph1_latest/ckpts/last.ckpt
